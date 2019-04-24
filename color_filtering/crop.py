@@ -1,13 +1,15 @@
-import cv2
+import matplotlib.pyplot as plt
 import os
 
-filenames = [f for f in os.listdir('.') if os.path.isfile(os.path.join('.', f))]
-filenames.sort()
+if __name__ == '__main__':
 
-for filename in filenames:
+    os.chdir('filmrole3_frames')
 
-	if '.jpg' in filename and not '(1)' in filename:
-	
-		img = cv2.imread(filename)
-		cropped = img[85:1030,:,:]
-		cv2.imwrite('cropped/' + filename[:14] + '_cropped.jpg', cropped)
+    filenames = [f for f in os.listdir('.') if os.path.isfile(os.path.join('.', f))]
+    filenames.sort()
+
+    for filename in filenames:
+        if '.jpg' in filename:
+            img = plt.imread(filename)
+
+            plt.imsave('../cropped/' + 'cropped_' + filename[:4] + filename[5:], img[89:1029,:,:])

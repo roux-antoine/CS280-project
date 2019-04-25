@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import matplotlib.path as mpath
 import matplotlib
 import seaborn as sns
+import planar
+
 
 
 def homography_solve():
@@ -46,13 +48,58 @@ def homography_transform(u, H):
     v_homogeneous = H @ u
     return [v_homogeneous[0]/v_homogeneous[2], v_homogeneous[1]/v_homogeneous[2]]
 
+def create_gaussian_patch(size, sigma):
+    patch = np.zeros((size, size))
+
+    for i in range(size):
+        for j in range(size):
+            patch[i,j] = gaussian(i, j, int(size/2), int(size/2), sigma)
+    patch /= np.sum(abs(patch))
+
+    return patch
+
+def gaussian(x, y, x0, y0, sigma):
+    return np.exp(-((x-x0)**2 + (y-y0)**2)/(2*sigma**2))
 
 def plot_heatmap(map):
 
-    ax = sns.heatmap(map, cmap="coolwarm")
+    # height = map.shape[0]
+    # width = map.shape[1]
+    #
+    # x_coord = [1269, 40, 900]
+    # y_coord = [288, 40, 900]
+    #
+    #
+    # my_ax = sns.kdeplot(x_coord, y_coord, shade = "True", color = "green", n_levels = 30)
+    #
+    # pitch = plt.Rectangle([0, 0], width = width, height = height, fill = False)
+    # leftPenalty = plt.Rectangle([0, 0.28*height], width = 0.12*width, height = 0.45*height, fill = False)
+    # rightPenalty = plt.Rectangle([0.88*width, 0.28*height], width = 0.12*width, height = 35.3/80*height, fill = False)
+    # midline = matplotlib.patches.ConnectionPatch([0.5*width, 0], [0.5*width, height], "data", "data")
+    #
+    # #Left, Right 6-yard Box
+    # leftSixYard = plt.Rectangle([0, 0.4*height], width = 0.04*width, height = 0.2*height, fill = False)
+    # rightSixYard = plt.Rectangle([0.96*width, 0.4*height], width = 0.04*width, height = 0.2*height, fill = False)
+    #
+    # # #Prepare Circles
+    # centreCircle = plt.Circle((0.5*width, 0.5*height), 0.09*width,color="black", fill = False)
+    # centreSpot = plt.Circle((0.5*width, 0.5*height), 0.005*width,color="black")
+    # #Penalty spots and Arcs around penalty boxes
+    # leftPenSpot = plt.Circle((0.08*width, 0.5*height), 0.005*width, color="black")
+    # rightPenSpot = plt.Circle((0.92*width, 0.5*height), 0.005*width, color="black")
+    #
+    # element = [pitch, leftPenalty, rightPenalty, midline, leftSixYard, rightSixYard, centreCircle, centreSpot, rightPenSpot, leftPenSpot]
+    #
+    # for i in element:
+    #     my_ax.add_patch(i)
+    #
+    # plt.axis('equal')
+    # plt.show()
 
     height = map.shape[0]
     width = map.shape[1]
+
+    ax = sns.heatmap(map, cmap="coolwarm")
 
     pitch = plt.Rectangle([0, 0], width = width, height = height, fill = False)
     leftPenalty = plt.Rectangle([0, 0.28*height], width = 0.12*width, height = 0.45*height, fill = False)
@@ -71,6 +118,9 @@ def plot_heatmap(map):
     rightPenSpot = plt.Circle((0.92*width, 0.5*height), 0.005*width, color="black")
 
     element = [pitch, leftPenalty, rightPenalty, midline, leftSixYard, rightSixYard, centreCircle, centreSpot, rightPenSpot, leftPenSpot]
+
+    # bbox = planar.BoundingBox([(0,0), (0, width), (0, height), (width,height)])
+    # ax.viewLim = bbox
 
     for i in element:
         ax.add_patch(i)
@@ -97,14 +147,17 @@ if __name__ == "__main__":
     blue_players_map = []
     white_players_map = []
 
+    half_patch_size = 15
+    patch = create_gaussian_patch(2*half_patch_size+1, int(half_patch_size/3))
+
     for blue_player_video in blue_players_video:
         player_pos = homography_transform(blue_player_video, H)
         blue_players_map.append([int(player_pos[1]), int(player_pos[0])])
         print(blue_players_map[-1])
 
-        for i in range(-10, 10):
-            for j in range(-10, 10):
-                blue_heatmap[blue_players_map[-1][0] + i][blue_players_map[-1][1] + j] += 1
+        for i in range(-half_patch_size, half_patch_size):
+            for j in range(-half_patch_size, half_patch_size):
+                blue_heatmap[blue_players_map[-1][0] + i][blue_players_map[-1][1] + j] += patch[i+half_patch_size, j+half_patch_size]
 
     for white_player_video in white_players_video:
         player_pos = homography_transform(white_player_video, H)
@@ -112,9 +165,9 @@ if __name__ == "__main__":
 
         print(white_players_map[-1])
 
-        for i in range(-10, 10):
-            for j in range(-10, 10):
-                white_heatmap[white_players_map[-1][0] + i][white_players_map[-1][1] + j] += 1
+        for i in range(-half_patch_size, half_patch_size):
+            for j in range(-half_patch_size, half_patch_size):
+                white_heatmap[white_players_map[-1][0] + i][white_players_map[-1][1] + j] += patch[i+half_patch_size, j+half_patch_size]
 
 
     plot_heatmap(blue_heatmap)

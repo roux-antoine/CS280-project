@@ -11,15 +11,21 @@ def homography_solve():
     u = points in the video
     v = points on the map
     """
-    v = np.array([[674, 318],
-                  [546, 454],
-                  [676, 580],
-                  [800, 452]])
+    v = np.array([[1303, 450],
+                  # [[1300, 184],
+                  # [1222, 316],
+                  # [1090, 714],
+                  [1302, 31],
+                  [1154, 452],
+                  [1089, 868]])
 
-    u = np.array([[942, 301],
-                  [453, 402],
-                  [944, 517],
-                  [1426, 402]])
+    u = np.array([[1873, 403], # G
+                  # [1718, 202], # A
+                  # [1532, 302], # B
+                  # [1302, 704], # C
+                  [1642, 108], # D
+                  [1291, 400], # E
+                  [1041, 1017]]) # F
 
     U = np.zeros((8, 2*u.shape[0]))
     for k in range(2*u.shape[1]):
@@ -81,7 +87,7 @@ def plot_heatmap(map):
 ########################################
 
 if __name__ == "__main__":
-    source_img = imread("filmrole3_001.jpg")
+    source_img = imread("filmrole1_001.jpg")
     target_img = imread("stadium.png")
 
     source_img = source_img / 255 #scaling the jpg file from 0 to 1 instead of 0 to 255
@@ -92,15 +98,17 @@ if __name__ == "__main__":
 
     H = homography_solve()
 
-    blue_players_video = [[1269, 288]]
-    white_players_video = [[894, 526]]
+
+    blue_players_video = [[714, 622]]
+    white_players_video = [[852, 538]]
     blue_players_map = []
     white_players_map = []
 
     for blue_player_video in blue_players_video:
         player_pos = homography_transform(blue_player_video, H)
         blue_players_map.append([int(player_pos[1]), int(player_pos[0])])
-        print(blue_players_map[-1])
+
+        print('blue_player', blue_players_map[-1])
 
         for i in range(-10, 10):
             for j in range(-10, 10):
@@ -110,7 +118,7 @@ if __name__ == "__main__":
         player_pos = homography_transform(white_player_video, H)
         white_players_map.append([int(player_pos[1]), int(player_pos[0])])
 
-        print(white_players_map[-1])
+        print('white_player', white_players_map[-1])
 
         for i in range(-10, 10):
             for j in range(-10, 10):

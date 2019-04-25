@@ -11,15 +11,15 @@ def homography_solve():
     u = points in the video
     v = points on the map
     """
-    v = np.array([[674, 318],
-                  [546, 454],
-                  [676, 580],
-                  [800, 452]])
+    v = np.array([[53, 33],
+                  [267, 867],
+                  [191, 453],
+                  [263, 34]])
 
-    u = np.array([[942, 301],
-                  [453, 402],
-                  [944, 517],
-                  [1426, 402]])
+    u = np.array([[273, 97],
+                  [880, 1033],
+                  [628, 399],
+                  [940, 96]])
 
     U = np.zeros((8, 2*u.shape[0]))
     for k in range(2*u.shape[1]):
@@ -81,7 +81,7 @@ def plot_heatmap(map):
 ########################################
 
 if __name__ == "__main__":
-    source_img = imread("filmrole3_001.jpg")
+    source_img = imread("filmrole5_498.jpg")
     target_img = imread("stadium.png")
 
     source_img = source_img / 255 #scaling the jpg file from 0 to 1 instead of 0 to 255
@@ -92,8 +92,8 @@ if __name__ == "__main__":
 
     H = homography_solve()
 
-    blue_players_video = [[1269, 288]]
-    white_players_video = [[894, 526]]
+    blue_players_video = [[1174, 426]]
+    white_players_video = [[1509, 109]]
     blue_players_map = []
     white_players_map = []
 

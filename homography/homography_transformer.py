@@ -99,7 +99,21 @@ def plot_heatmap(map):
     height = map.shape[0]
     width = map.shape[1]
 
+
+
     ax = sns.heatmap(map, cmap="coolwarm")
+
+    ## begin of image border lines ##
+    lineCenter1 = matplotlib.patches.ConnectionPatch([width/4, 0], [width/3, height], "data", "data")
+    lineCenter2 = matplotlib.patches.ConnectionPatch([3*width/4, 0], [2*width/3, height], "data", "data")
+    lineLeft = matplotlib.patches.ConnectionPatch([width/2, 0], [width/3, height], "data", "data")
+    lineRight = matplotlib.patches.ConnectionPatch([width/2, 0], [2*width/3, height], "data", "data")
+    ax.plot([width/4,   width/3],   [0, height], '--', c='k')  # line center 1
+    ax.plot([3*width/4, 2*width/3], [0, height], '--', c='k')  # line center 2
+    ax.plot([width/2,   width/3],   [0, height], '--', c='k')  # line left
+    ax.plot([width/2,   2*width/3], [0, height], '--', c='k')  # line right
+
+    ## end of image border lines ##
 
     pitch = plt.Rectangle([0, 0], width = width, height = height, fill = False)
     leftPenalty = plt.Rectangle([0, 0.28*height], width = 0.12*width, height = 0.45*height, fill = False)

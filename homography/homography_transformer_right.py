@@ -98,7 +98,6 @@ if __name__ == "__main__":
 
     H = homography_solve()
 
-
     blue_players_video = [[714, 622]]
     white_players_video = [[852, 538]]
     blue_players_map = []

@@ -14,12 +14,14 @@ def homography_solve():
     v = np.array([[53, 33],
                   [267, 867],
                   [191, 453],
-                  [263, 34]])
+                  #[263, 34],
+                  [523, 31]])
 
     u = np.array([[273, 97],
                   [880, 1033],
                   [628, 399],
-                  [940, 96]])
+                  #[940, 96],
+                  [1575, 94]])
 
     U = np.zeros((8, 2*u.shape[0]))
     for k in range(2*u.shape[1]):
@@ -91,6 +93,9 @@ if __name__ == "__main__":
     white_heatmap = np.zeros((target_img.shape[0], target_img.shape[1]))
 
     H = homography_solve()
+
+    print(homography_transform([1917,100], H))
+    print(homography_transform([1917,1040], H))
 
     blue_players_video = [[1174, 426]]
     white_players_video = [[1509, 109]]

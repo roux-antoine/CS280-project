@@ -15,18 +15,22 @@ import zipfile
 from distutils.version import StrictVersion
 from collections import defaultdict
 from io import StringIO
-from matplotlib import pyplot as plt
+# import matplotlib
+# matplotlib.use('TkAgg')
+# import matplotlib.pyplot as plt
+# from matplotlib import pyplot as plt
+# print(matplotlib.get_backend())
 from PIL import Image
-
+import cv2
 
 # This is needed since the utils folder is stored in
 # /Users/chestermu/Documents/Tensorflow/models/research/object_detection/utils
 
 ###########################################################################
 ##CHANGE DIRECTORY HERE
-sys.path.append("/Users/chestermu/Documents/Tensorflow/models/research/")
+# sys.path.append("/Users/chestermu/Documents/Tensorflow/models/research/")
+sys.path.append("/home/likai/tensorflow/models/research")
 ###########################################################################
-
 from object_detection.utils import ops as utils_ops
 
 
@@ -46,9 +50,9 @@ from object_detection.utils import visualization_utils as vis_util
 ## Model preparation
 
 # What model to download.
-MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
+# MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
+MODEL_NAME = 'faster_rcnn_resnet101_coco_2018_01_28'
 
-#MODEL_NAME = 'faster_rcnn_resnet50_coco'
 
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
@@ -60,7 +64,7 @@ PATH_TO_FROZEN_GRAPH = MODEL_NAME + '/frozen_inference_graph.pb'
 # modified: change directory
 ###########################################################################
 ##CHANGE DIRECTORY HERE
-PATH_TO_LABELS = os.path.join('../../Documents/Tensorflow/models/research/object_detection/data', 'mscoco_label_map.pbtxt')
+PATH_TO_LABELS = os.path.join('/home/likai/tensorflow/models/research/object_detection/data/', 'mscoco_label_map.pbtxt')
 ###########################################################################
 
 
@@ -108,7 +112,7 @@ def load_image_into_numpy_array(image):
 PATH_TO_TEST_IMAGES_DIR = 'test_images'
 ###########################################################################
 
-TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(2, 3) ]
+TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]
 #print(TEST_IMAGE_PATHS)
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)
@@ -162,6 +166,9 @@ def run_inference_for_single_image(image, graph):
 
 for image_path in TEST_IMAGE_PATHS:
   image = Image.open(image_path)
+  width, height = image.size
+  #Size 1920*945
+  
   # the array based representation of the image will be used later in order to prepare the
   # result image with boxes and labels on it.
   image_np = load_image_into_numpy_array(image)
@@ -169,6 +176,20 @@ for image_path in TEST_IMAGE_PATHS:
   image_np_expanded = np.expand_dims(image_np, axis=0)
   # Actual detection.
   output_dict = run_inference_for_single_image(image_np_expanded, detection_graph)
+  
+  boxes_array = output_dict['detection_boxes'].copy()
+
+  for box in boxes_array:
+    for pos in range(len(box)):
+      if pos%2 ==0:
+        box[pos] *= height
+      else:
+        box[pos] *= width
+  # ymin, xmin, ymax, xmax
+  print(boxes_array)
+
+
+
   # Visualization of the results of a detection.
   vis_util.visualize_boxes_and_labels_on_image_array(
       image_np,
@@ -179,8 +200,11 @@ for image_path in TEST_IMAGE_PATHS:
       instance_masks=output_dict.get('detection_masks'),
       use_normalized_coordinates=True,
       line_thickness=8)
-  plt.figure(figsize=IMAGE_SIZE)
-  plt.imshow(image_np)
-  plt.show()
+  cv2.imshow('image',image_np)
+  cv2.waitKey(0)
+  # plt.figure(figsize=IMAGE_SIZE)
+  # plt.imshow(image_np)
+  # plt.show()
+  # plt.savefig('im1.jpg')
 
 

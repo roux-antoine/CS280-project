@@ -142,6 +142,7 @@ PATH_TO_TEST_IMAGES_DIR = 'filmrole3_frames'
 ###########################################################################
 
 TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'filmerole3_00{}.jpg'.format(i)) for i in range(1, 10) ] + [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'filmerole3_0{}.jpg'.format(i)) for i in range(10, 100) ] + [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'filmerole3_{}.jpg'.format(i)) for i in range(100, 602) ]
+# TEST_IMAGE_PATHS =[ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'filmerole3_0{}.jpg'.format(i)) for i in range(95, 98) ]
 #print(TEST_IMAGE_PATHS)
 # Size, in inches, of the output images.
 IMAGE_SIZE = (12, 8)
@@ -473,17 +474,30 @@ for image_nbr, image_path in enumerate(TEST_IMAGE_PATHS):
   np.savetxt('csv/blue/blue_pos_' + str(image_nbr) + '.csv', np.asarray(blue_player_pos_top_frame_this_image), delimiter=',')
   np.savetxt('csv/white/white_pos_' + str(image_nbr) + '.csv', np.asarray(white_player_pos_top_frame_this_image), delimiter=',')
 
-  plot_heatmap(np.array(blue_players_map)[:,0], np.array(blue_players_map)[:,1], 'blue', image_nbr)
-  plot_heatmap(np.array(white_players_map)[:,0], np.array(white_players_map)[:,1], 'red', image_nbr)
 
-  plot_player_pos(np.array(blue_player_pos_top_frame_this_image)[:,0], np.array(blue_player_pos_top_frame_this_image)[:,1], 'blue', image_nbr)
-  plot_player_pos(np.array(white_player_pos_top_frame_this_image)[:,0], np.array(white_player_pos_top_frame_this_image)[:,1], 'red', image_nbr)
+  # print(str(len(blue_players_map)))
+  # print(str(len(white_players_map)))
+  print("Number of Blue Player Detected:" + len(blue_player_pos_top_frame_this_image))
+  print("Number of white Player Detected:" + len(white_player_pos_top_frame_this_image))
+
+  if len(blue_players_map) != 0:
+    plot_heatmap(np.array(blue_players_map)[:,0], np.array(blue_players_map)[:,1], 'blue', image_nbr)
+
+  if len(blue_players_map) != 0:
+    plot_heatmap(np.array(white_players_map)[:,0], np.array(white_players_map)[:,1], 'red', image_nbr)
+
+  if len(blue_player_pos_top_frame_this_image) != 0:
+    plot_player_pos(np.array(blue_player_pos_top_frame_this_image)[:,0], np.array(blue_player_pos_top_frame_this_image)[:,1], 'blue', image_nbr)
+  
+  if len(white_player_pos_top_frame_this_image) != 0:
+    plot_player_pos(np.array(white_player_pos_top_frame_this_image)[:,0], np.array(white_player_pos_top_frame_this_image)[:,1], 'red', image_nbr)
 
   cv2.rectangle(cvimg,(box[1],box[0]),(box[3],box[2]),(0,255,0),3)
 
   cv2.putText(cvimg,detect,(box[1],box[2]), font, 1,(255,255,255),2,cv2.LINE_AA)
 
-  print("Currently Processing Image " + str(image_nbr))
+  print("Currently Processing Image Number " + str(image_nbr))
+
   elapsed = time.time() - start_time
   print("Processing Time" + str(elapsed))
       

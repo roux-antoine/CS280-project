@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import timeit
 
 cap = cv2.VideoCapture("./filmrole/filmrole5.avi")
 

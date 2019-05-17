@@ -102,7 +102,6 @@ PATH_TO_LABELS = os.path.join('/home/likai/tensorflow/models/research/object_det
 ###########################################################################
 
 
-
 ###########################################################################
 ## UNCOMMENT HERE TO DOWNLOAD MODEL
 ## Download model
@@ -477,8 +476,8 @@ for image_nbr, image_path in enumerate(TEST_IMAGE_PATHS):
 
   # print(str(len(blue_players_map)))
   # print(str(len(white_players_map)))
-  print("Number of Blue Player Detected:" + len(blue_player_pos_top_frame_this_image))
-  print("Number of white Player Detected:" + len(white_player_pos_top_frame_this_image))
+  print("Number of Blue Player Detected:" + str(len(blue_player_pos_top_frame_this_image)))
+  print("Number of white Player Detected:" + str(len(white_player_pos_top_frame_this_image)))
 
   if len(blue_players_map) != 0:
     plot_heatmap(np.array(blue_players_map)[:,0], np.array(blue_players_map)[:,1], 'blue', image_nbr)
@@ -493,7 +492,6 @@ for image_nbr, image_path in enumerate(TEST_IMAGE_PATHS):
     plot_player_pos(np.array(white_player_pos_top_frame_this_image)[:,0], np.array(white_player_pos_top_frame_this_image)[:,1], 'red', image_nbr)
 
   cv2.rectangle(cvimg,(box[1],box[0]),(box[3],box[2]),(0,255,0),3)
-
   cv2.putText(cvimg,detect,(box[1],box[2]), font, 1,(255,255,255),2,cv2.LINE_AA)
 
   print("Currently Processing Image Number " + str(image_nbr))
@@ -501,12 +499,11 @@ for image_nbr, image_path in enumerate(TEST_IMAGE_PATHS):
   elapsed = time.time() - start_time
   print("Processing Time" + str(elapsed))
       
-# cv2.imshow('image',cvimg)
-# cv2.waitKey(0)
+  cv2.imshow('image',cvimg)
+  cv2.waitKey(0)
 
 
-
-#######################################################3
+#######################################################
   # # Visualization of the results of a detection.
   # vis_util.visualize_boxes_and_labels_on_image_array(
   #     image_np,

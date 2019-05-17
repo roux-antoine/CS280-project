@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
-import timeit
+from timeit import default_timer as timer
+
 
 cap = cv2.VideoCapture("./filmrole/filmrole5.avi")
 
@@ -30,12 +31,16 @@ while(1):
     ret,frame = cap.read()
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+    start = timer()
     # calculate optical flow
     p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
 
     # Select good points
     good_new = p1[st==1]
     good_old = p0[st==1]
+    end = timer()
+
+    print("Elapsed time for 1 optical flow tracking: ", end - start)
 
     # draw the tracks
     for i,(new,old) in enumerate(zip(good_new,good_old)):
